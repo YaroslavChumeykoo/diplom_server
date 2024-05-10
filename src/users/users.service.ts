@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.module';
 import { UserDto } from './dto/UserDto';
+import { updateUserDto } from './dto/updateRoleUserDto';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,7 @@ export class UsersService {
   ) {}
   
   async getUsers() {
-    return await this.userModel.findAll();
+    return await this.userModel.findAll({ order: [['id', 'ASC']] });
   }
 
   async createUser(dto: UserDto) {
@@ -21,6 +22,16 @@ export class UsersService {
   async getUserByEmail( email: string) {
     const user = await this.userModel.findOne({where: {email}})
     return user
+  }
+
+  async updateUser(id: number, data: updateUserDto) {
+    const [index, [result]] = await this.userModel.update(data, {
+      where: { id },
+      returning: true,
+    });
+    if (index === 0) throw new NotFoundException('Task not found');
+
+    return result;
   }
 }
 

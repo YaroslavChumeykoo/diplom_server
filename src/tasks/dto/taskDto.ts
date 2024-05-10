@@ -1,5 +1,7 @@
 export class TaskDto {
     name: string;
     text: string;
-    photo?: string
+    tag: string;
+    level: string;
+    photo?: string;
 }

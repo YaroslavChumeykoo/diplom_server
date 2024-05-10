@@ -4,6 +4,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TasksModule } from './tasks/tasks.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -20,6 +22,12 @@ import { TasksModule } from './tasks/tasks.module';
   UsersModule,
   AuthModule,
   TasksModule,
+  ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', '/photo'), // путь к папке 'photo'
+    serveRoot: '/photo/', // URL-префикс, по которому будут доступны файлы
+  }),
 ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

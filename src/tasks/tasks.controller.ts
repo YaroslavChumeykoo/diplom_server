@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TaskDto } from './dto/taskDto';
 import { UpdateTaskDto } from './dto/updateTaskDto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 import { JwtRoleGuard } from 'src/auth/jwt-role-guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('tasks')
 export class TasksController {
@@ -18,8 +19,16 @@ export class TasksController {
   @UseGuards(JwtRoleGuard)
   @UseGuards(JwtAuthGuard)
   @Post()
-  createTask(@Body() taskDto: TaskDto) {
-    return this.tasksService.createTask(taskDto);
+  @UseInterceptors(FileInterceptor('photo'))
+  async createTask(@UploadedFile() file: Express.Multer.File, @Body() body) {
+    const taskDto = {
+      name: body.name,
+      text: body.text,
+      tag: body.tag,
+      level: body.level,
+      photo: file,
+    };
+    return await this.tasksService.createTask(taskDto);
   }
 
   @UseGuards(JwtRoleGuard)
@@ -29,10 +38,10 @@ export class TasksController {
     return this.tasksService.deleteTask(id);
   }
 
-  @UseGuards(JwtRoleGuard)
-  @UseGuards(JwtAuthGuard)
-  @Patch(':id')
-  updateTask(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.updateTask(id, updateTaskDto);
-  }
+  // @UseGuards(JwtRoleGuard)
+  // @UseGuards(JwtAuthGuard)
+  // @Patch(':id')
+  // updateTask(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) {
+  //   return this.tasksService.updateTask(id, updateTaskDto);
+  // }
 }
