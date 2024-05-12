@@ -31,7 +31,7 @@ export class TasksService {
           text: taskDto.text,
           tag: taskDto.tag,
           level: taskDto.level,
-          photo: `${photoUrl ? `http://localhost:3001/${photoUrl}` : ''}`,
+          photo: `${photoUrl ? `/${photoUrl}` : ''}`,
         });
         
         console.log(photoUrl)
