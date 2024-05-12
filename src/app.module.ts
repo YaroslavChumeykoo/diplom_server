@@ -10,12 +10,12 @@ import { join } from 'path';
 @Module({
   imports: [
     SequelizeModule.forRoot({
-    dialect: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: '1234',
-    database: 'diplome',
+    dialect: 'procces.env.DB_DIALECT',
+    host: 'procces.env.DB_HOST',
+    port: procces.env.DB_PORT,
+    username: 'DB_USERNAME',
+    password: 'DB_PASSWORD',
+    database: 'DB_NAME',
     models: [User],
     autoLoadModels: true
   }),
